@@ -21,7 +21,9 @@ app.post('/todos', (req, res) => {
 //save to database
  todo.save().then ((doc) => {
   res.send(doc);
- }, (e) =>{res.status(400).send(e);});
+ }, (e) =>{
+   res.status(400).send(e);
+ });
 
 });
 
@@ -30,3 +32,7 @@ app.post('/todos', (req, res) => {
 app.listen(3000,() => {
   console.log('Started on port 3000');
 });
+
+
+//export the app as to access in test file.
+module.exports = {app};
