@@ -27,6 +27,17 @@ app.post('/todos', (req, res) => {
 
 });
 
+//Configuring a GET route, this route enables fetchin  of todos
+app.get('/todos', (req, res) => {
+
+//Fetch all from to database
+ Todo.find().then ((todos) => {
+  res.send({todos});
+ }, (e) =>{
+   res.status(400).send(e);
+ });
+
+});
 
 //set port and  callback funtion to fire when application is started
 app.listen(3000,() => {
