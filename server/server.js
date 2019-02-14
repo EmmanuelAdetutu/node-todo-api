@@ -10,7 +10,7 @@ var {User} = require('./models/user');
 
 //create variable to store application in express
 var app = express();
-
+const port = process.env.PORT || 3000;
 //Getting data sent from client
 app.use(bodyParser.json());
 
@@ -58,8 +58,8 @@ app.get('/todos/:id', (req, res) => {
 });
 
 //set port and  callback funtion to fire when application is started
-app.listen(3000,() => {
-  console.log('Started on port 3000');
+app.listen(port,() => {
+  console.log(`Started on port ${port}`);
 });
 
 //export the app as to access in test file.
