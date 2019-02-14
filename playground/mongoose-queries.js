@@ -28,4 +28,4 @@ User.findById(id).then((user) =>{
     return console.log('User Id not found');
   }
   console.log('User', user);
-}).catch((e) => console.log(e));
+});

@@ -1,3 +1,5 @@
+const {ObjectID} = require('mongodb');
+
 var express = require ('express');
 var bodyParser = require('body-parser');
 
@@ -27,7 +29,7 @@ app.post('/todos', (req, res) => {
 
 });
 
-//Configuring a GET route, this route enables fetchin  of todos
+//Configuring a GET route, this route enables fetching all todos
 app.get('/todos', (req, res) => {
 
 //Fetch all from to database
@@ -39,11 +41,26 @@ app.get('/todos', (req, res) => {
 
 });
 
+//Configuring a GET route, this route enables fetching all todos
+app.get('/todos/:id', (req, res) => {
+  var id = req.params.id;
+  //validate if ID is an object
+  if (!ObjectID.isValid(id)) {return res.status(404).send();}
+
+  //Fetch data by valid ID
+  Todo.findById(id).then((todos) =>{
+     if (!todos) {
+      return res.status(404).send();  //if empty send 404
+     }
+     res.send({todos});
+  }).catch((e) => {res.status(400).send();});
+//);
+});
+
 //set port and  callback funtion to fire when application is started
 app.listen(3000,() => {
   console.log('Started on port 3000');
 });
-
 
 //export the app as to access in test file.
 module.exports = {app};
