@@ -57,6 +57,24 @@ app.get('/todos/:id', (req, res) => {
 //);
 });
 
+
+//Configuring a Delete route, this route enables Deleteing of Items all todos
+app.delete('/todos/:id', (req, res) => {
+  var id = req.params.id;
+  //validate if ID is an object
+  if (!ObjectID.isValid(id)) {return res.status(404).send();}
+
+  //Delete data by valid ID
+  Todo.findByIdAndDelete(id).then((todos) =>{
+     if (!todos) {
+      return res.status(404).send();  //if empty send 404
+     }
+     res.status(200).send(todos); //if ok send doc with status 200
+  }).catch((e) => {res.status(400).send();});
+//);
+});
+
+
 //set port and  callback funtion to fire when application is started
 app.listen(port,() => {
   console.log(`Started on port ${port}`);
