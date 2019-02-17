@@ -11,7 +11,9 @@ const todos =[{
   text: 'First test todo'
 }, {
     _id: new ObjectID(),
-  text: 'Second test todo'
+  text: 'Second test todo',
+  completed: true,
+  completedAt: 333
 }];
 
 beforeEach((done) => {
@@ -64,7 +66,7 @@ describe('POST /todos', () => {
   });
  });
 
- //GET test for all items
+//GET test for all items
  describe('GET /todos', () => {
    it ('should Get all todo Items', (done) =>{
       request(app)
@@ -77,7 +79,7 @@ describe('POST /todos', () => {
    });
   });
 
-  //GET test for single item.
+//GET test for single item.
   describe('GET /todos/:id', () => {
     it ('should Get a todo Item', (done) =>{
        request(app)
@@ -105,7 +107,7 @@ describe('POST /todos', () => {
     });
    });
 
-   //describe test for Delete
+//describe test for Delete
  describe('Delete /todos/:id', () =>{
 
    it('Should remove a todos', (done) => {
@@ -147,3 +149,41 @@ describe('POST /todos', () => {
 
 
  });
+
+// Test for Patch route
+describe('PATCH /todos/:id', () => {
+  it ('should update the todo', (done) =>{
+    //grab id of first items
+    var hexId = todos[0]._id.toHexString();
+    var text = "This is new Text";
+    request(app)
+    .patch(`/todos/${hexId}`)
+    .send({completed: true, text: text})  //update text, set completed true
+    .expect(200) //expect 200
+    .expect((res) =>{
+      expect(res.body.todo.text).toBe(text);
+      expect(res.body.todo.completed).toBe('true');  //expect text is changed, completed is true,
+      expect(res.body.todo.completedAt).toBeA('number');
+     })
+     .end(done);
+
+  });
+
+   it ('should clear completedAt when todo is not completed', (done) =>{
+     //grab id of second todo item
+
+     var hexId = todos[1]._id.toHexString();
+     var text = "This is new Text 2";
+     request(app)
+     .patch(`/todos/${hexId}`)
+     .send({completed: false, text: text})  //update text, set completed false
+     .expect(200) //expect 200
+     .expect((res) =>{
+       expect(res.body.todo.text).toBe(text);
+       expect(res.body.todo.completed).toBe('false');  //expect text is changed, completed is false,
+       expect(res.body.todo.completedAt).toNotExist(); //expect completedAt is null .toNotExist
+      })
+      .end(done);
+
+   });
+});
