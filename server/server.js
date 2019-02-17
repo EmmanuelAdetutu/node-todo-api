@@ -15,7 +15,7 @@ const port = process.env.PORT;
 //Getting data sent from client
 app.use(bodyParser.json());
 
-//Configuring a POST route, this route enables creationg of new todos
+//Configuring TODOS POST route, this route enables creationg of new todos
 app.post('/todos', (req, res) => {
   var todo = new Todo({
     text: req.body.text
@@ -30,7 +30,7 @@ app.post('/todos', (req, res) => {
 
 });
 
-//Configuring a GET route, this route enables fetching all todos
+//Configuring TODOS GET route, this route enables fetching all todos
 app.get('/todos', (req, res) => {
 
 //Fetch all from to database
@@ -42,7 +42,7 @@ app.get('/todos', (req, res) => {
 
 });
 
-//Configuring a GET route, this route enables fetching all todos
+//Configuring TODOS GET route, this route enables fetching all todos
 app.get('/todos/:id', (req, res) => {
   var id = req.params.id;
   //validate if ID is an object
@@ -58,8 +58,7 @@ app.get('/todos/:id', (req, res) => {
 //);
 });
 
-
-//Configuring a Delete route, this route enables Deleteing of Items all todos
+//Configuring TODOS Delete route, this route enables Deleteing of Items all todos
 app.delete('/todos/:id', (req, res) => {
   var id = req.params.id;
   //validate if ID is an object
@@ -75,7 +74,7 @@ app.delete('/todos/:id', (req, res) => {
 //);
 });
 
-
+//configure TODOS patch update rout for todos
 app.patch('/todos/:id', (req, res) =>{
   var id = req.params.id;
   var body = _.pick(req.body, ['text', 'completed']);
@@ -100,6 +99,23 @@ app.patch('/todos/:id', (req, res) =>{
     })
 });
 
+
+//Configuring USERS POST route, this route enables creationg of new User
+app.post('/users', (req, res) => {
+      var body = _.pick(req.body, ['email', 'password']);
+      var user = new User(body);
+
+      //save to database
+       user.save().then (() => {
+         return user.generateAuthToken();
+        // res.send(user);
+       }).then((token) => {
+         res.header('x-auth', token).send(user);
+       }).catch((e) =>{
+         res.status(400).send(e);}
+       );
+
+     });
 
 //set port and  callback funtion to fire when application is started
 app.listen(port,() => {
